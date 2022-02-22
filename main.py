@@ -6,7 +6,7 @@ from datetime import datetime
 #Produktname
 M_SYMBOL = "SEAT"
 #Menge der Ident-Points
-C_IdentPoints = 1
+C_IdentPoints = 100
 #Ident Points Simulieren?
 S_IdentPoints = True
 #Ident Point Pattern
@@ -18,7 +18,7 @@ IP_NameBase = "TestNode"
 #M_CARR_QUANT
 M_CARR_QUANT = 1
 #Part Menge
-C_Parts = 1
+C_Parts = 100
 #Part Basis Name
 Part_NameBase = "TestPart"
 #Unit Type Pattern
@@ -62,6 +62,7 @@ def TEST_A():
         else:
             print("Test Failed")
 def TEST_B():
+
     global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     e = "Too much Rekursion"
     p = 0
@@ -168,11 +169,11 @@ def returnJSON(IdentPoints, Parts, Simulation):
         "IdentPointSimulation": Simulation
     }
     
-    #if (checkErrors(k) == "0"):
-        #file = open("Data/result4.json", "w")
-        #file.write(json.dumps(k))
-    #else:
-        #print(checkErrors(k))
+    if (checkErrors(k) == "0"):
+        file = open("Data/result4.json", "w")
+        file.write(json.dumps(k))
+    else:
+        print(checkErrors(k))
 def checkErrors(data):
     data
     n = type(["n","d"])
@@ -205,6 +206,6 @@ def main():
     time_end = datetime.now()
     diff = time_end - time_start
     return "Finished"# + str(diff)
-#print(main())
+print(main())
 #TEST_A()
-TEST_B()
+#TEST_B()
