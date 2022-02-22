@@ -6,7 +6,7 @@ from datetime import datetime
 #Produktname
 M_SYMBOL = "SEAT"
 #Menge der Ident-Points
-C_IdentPoints = 4
+C_IdentPoints = 8
 #Ident Points Simulieren?
 S_IdentPoints = True
 #Ident Point Pattern
@@ -18,7 +18,7 @@ IP_NameBase = "TestNode"
 #M_CARR_QUANT
 M_CARR_QUANT = 1
 #Part Menge
-C_Parts = 4
+C_Parts = 8
 #Part Basis Name
 Part_NameBase = "TestPart"
 #Unit Type Pattern
