@@ -6,11 +6,11 @@ from datetime import datetime
 #Produktname
 M_SYMBOL = "SEAT"
 #Menge der Ident-Points
-C_IdentPoints = 9
+C_IdentPoints = 1
 #Ident Points Simulieren?
 S_IdentPoints = True
 #Ident Point Pattern
-P_IdentPoints = [1,1,3]
+P_IdentPoints = [1]
 #Ident Points Id-Startwert
 IP_id = 38462
 #Ident Point Basis Name
@@ -18,17 +18,62 @@ IP_NameBase = "TestNode"
 #M_CARR_QUANT
 M_CARR_QUANT = 1
 #Part Menge
-C_Parts = 8
+C_Parts = 1
 #Part Basis Name
 Part_NameBase = "TestPart"
 #Unit Type Pattern
-P_UnitTypes = [1,2]
-#Timestamp - Start
+P_UnitTypes = [1]
+#Timestamp - Start format: datetime(year,month,day,hour,minute,second)
 S_Timestamp = datetime.now()
 #Timestamp - Intervall in s!!!
 I_Timestamp = 10
 #global Time: Zeit wird nicht für jede PU zurükgesetzt
 globalTime = False
+
+
+def setGlobals(a,b,c,d,e,f,g,h,i,j,k,l,m):
+    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    M_SYMBOL = a
+    C_IdentPoints = b
+    S_IdentPoints = c
+    P_IdentPoints = d
+    IP_id = e
+    IP_NameBase = f
+    M_CARR_QUANT = g
+    C_Parts = h
+    Part_NameBase = i
+    P_UnitTypes = j
+    S_Timestamp = k
+    I_Timestamp = l
+    globalTime = m
+def TEST_A():
+    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    M_SYMBOL
+    b = [10,100,1001,500, 2000, 0,1000,2000,2001,2000]
+    h = [10,100,1101,2010, 501, 0,1000,500,400,501]
+    e = ["Finished", "Finished", "Too much Rekursion", "Too much Rekursion","Too much Rekursion", "No Parts/IPs", "Finished","Finished","Too much Rekursion", "Too much Rekursion"]
+    for i in range (0,10):
+        setGlobals(M_SYMBOL, b[i], S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, h[i], Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
+        x = main()
+        print("Exspected: " + e[i])
+        print("Recieved:  " + x)
+        if (x == e[i]):
+            print("Test Passed")
+        else:
+            print("Test Failed")
+def TEST_B():
+    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    e = "Too much Rekursion"
+    p = 0
+    for i in range (1000,3000):
+        if (i%100 == 0):
+            print(i)
+        setGlobals(M_SYMBOL, i, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, 1, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
+        x = main()
+        if (x == e):
+            p += 1
+    print("Exspected: 1000")
+    print("Recieved:  "+ str(p))
 def createIdentPoints(symbol,id_start):
     commands = []
     if (C_IdentPoints % (len(P_IdentPoints)) != 0):
@@ -123,11 +168,11 @@ def returnJSON(IdentPoints, Parts, Simulation):
         "IdentPointSimulation": Simulation
     }
     
-    if (checkErrors(k) == "0"):
-        file = open("Data/result4.json", "w")
-        file.write(json.dumps(k))
-    else:
-        print(checkErrors(k))
+    #if (checkErrors(k) == "0"):
+        #file = open("Data/result4.json", "w")
+        #file.write(json.dumps(k))
+    #else:
+        #print(checkErrors(k))
 def checkErrors(data):
     data
     n = type(["n","d"])
@@ -142,7 +187,24 @@ def checkErrors(data):
         return "Error in IP Simulation"
     else:
         return "0"
-a = createIdentPoints(IP_NameBase, IP_id)
-b = createProductionUnits(M_SYMBOL, Part_NameBase, P_UnitTypes)
-c = simulateIdentPoints(M_SYMBOL, Part_NameBase, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime, S_IdentPoints)
-returnJSON(a,b,c)
+def main():
+    time_start = datetime.now()
+    global IP_NameBase, IP_id, M_SYMBOL, Part_NameBase, P_UnitTypes, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime, S_IdentPoints
+    if ((C_IdentPoints > 1000) and (C_Parts > 1000)):
+        return "Too much Rekursion"
+    if (C_IdentPoints * C_Parts > 1000000):
+        return "Too much Rekursion"
+    if ((C_IdentPoints > 2000) or (C_Parts > 2000)):
+        return "Too much Rekursion"
+    if ((C_IdentPoints < 1) or (C_Parts < 1)):
+        return "No Parts/IPs"
+    a = createIdentPoints(IP_NameBase, IP_id)
+    b = createProductionUnits(M_SYMBOL, Part_NameBase, P_UnitTypes)
+    c = simulateIdentPoints(M_SYMBOL, Part_NameBase, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime, S_IdentPoints)
+    returnJSON(a,b,c)
+    time_end = datetime.now()
+    diff = time_end - time_start
+    return "Finished"# + str(diff)
+#print(main())
+#TEST_A()
+TEST_B()
