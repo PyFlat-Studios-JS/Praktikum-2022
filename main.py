@@ -6,11 +6,11 @@ from datetime import datetime
 #Produktname
 M_SYMBOL = "SEAT"
 #Menge der Ident-Points
-C_IdentPoints = 8
+C_IdentPoints = 9
 #Ident Points Simulieren?
 S_IdentPoints = True
 #Ident Point Pattern
-P_IdentPoints = [1,3,3, 4]
+P_IdentPoints = [1,1,3]
 #Ident Points Id-Startwert
 IP_id = 38462
 #Ident Point Basis Name
@@ -83,6 +83,10 @@ def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_Q
             m = m + I_TIMESTAMP
             time = datetime.fromtimestamp(m)
             if (i < len(ACTION_Pattern)):
+                if (ACTION_Pattern[i] == 1 or ACTION_Pattern[i] == 2 or ACTION_Pattern[i] == 3):
+                    dummy = 4
+                else:
+                    return "Invalid Action at Part " + str(c) + " and IdentPoint " + str(i)
                 commands.append(
                 {
                 "M_SYMBOL": P_Symbol,
@@ -97,6 +101,10 @@ def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_Q
                 e = i
                 while (e>len(ACTION_Pattern)-1):
                     e -= len(ACTION_Pattern)
+                if (ACTION_Pattern[e] == 1 or ACTION_Pattern[e] == 2 or ACTION_Pattern[e] == 3):
+                    dummy = 8
+                else:
+                    return "Invalid Action at Part " + str(c) + " and IdentPoint " + str(i)
                 commands.append(
                     {
                     "M_SYMBOL": P_Symbol,
@@ -124,10 +132,13 @@ def checkErrors(data):
     data
     n = type(["n","d"])
     if (type(data["IdentPointCreatingCommands"]) != n):
+        print("WARNING " + data["IdentPointCreatingCommands"])
         return "Error in Ident Point creation"
     elif (type(data["ProductionUnitCreatingCommands"]) != n):
+        print("WARNING " + data["ProductionUnitCreatingCommands"])
         return "Error in PU creation"
     elif (type(data["IdentPointSimulation"]) != n):
+        print("WARNING " + data["IdentPointSimulation"])
         return "Error in IP Simulation"
     else:
         return "0"
