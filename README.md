@@ -15,7 +15,7 @@ Parameter:
 - P_IdentPoints (int Array) --> Regelmäßige Folge von Aktionen eines Prdouktes an Ident Points -- C_IdentPoints muss ohne Rest durch die Länge von P_IdentPoints teilbar sein
 - IP_id (int) --> Startwert für Ident Points (Id wird für jeden IP um 1 erhöht)
 - IP_NameBase (str) --> Grundname, wird für jeden IP mit der Nummer des IP ergänzt: bsp.(TestPoint1, TestPoint2, TestPoint3, TestPoint4, ...)
-- C_CARR_QUANT (int) --> Anzahl der Produkte, die auf einmal transportiert werden
+- C_CARR_QUANT (int) --> Anzahl der Produkte, die auf einmal transportiert werden (Hat keine Auswirkungen auf das Programm, der Parameter wird 1:1 übergeben)
 - C_Parts (int) --> Anzahl der ProductionUnits
 - Part_NameBase (str) --> Grundname, wird für jeden Part mit der Nummer des Parts ergänzt: bsp.(TestPart1, TestPart2, TestPart3, ...)
 - P_UnitTypes (int Array) --> Einheitentypen - müssen vom Nutzer festgelegt werden - sonst gleiche Funktion wie P_IdentPoints
