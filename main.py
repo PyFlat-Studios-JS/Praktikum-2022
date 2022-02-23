@@ -1,12 +1,12 @@
 import json
 from datetime import datetime
 #Die Menge der Units / Ident Points muss ohne Rest durch die Länge der Patterns teilbar sein
-
+time_start = datetime.now()
 #Daten
 #Produktname
 M_SYMBOL = "SEAT"
 #Menge der Ident-Points
-C_IdentPoints = 100
+C_IdentPoints = 5
 #Ident Points Simulieren?
 S_IdentPoints = True
 #Ident Point Pattern
@@ -18,7 +18,7 @@ IP_NameBase = "TestNode"
 #M_CARR_QUANT
 M_CARR_QUANT = 1
 #Part Menge
-C_Parts = 100
+C_Parts = 5
 #Part Basis Name
 Part_NameBase = "TestPart"
 #Unit Type Pattern
@@ -28,8 +28,11 @@ S_Timestamp = datetime.now()
 #Timestamp - Intervall in s!!!
 I_Timestamp = 10
 #global Time: Zeit wird nicht für jede PU zurükgesetzt
-globalTime = False
-
+globalTime = True
+#Do Timeouts Never set to False
+DoTimeOuts = True
+#Timeout Limit in s
+LimitTimeOut = 5
 
 def setGlobals(a,b,c,d,e,f,g,h,i,j,k,l,m):
     global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
@@ -49,19 +52,27 @@ def setGlobals(a,b,c,d,e,f,g,h,i,j,k,l,m):
 def TEST_A():
     global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     M_SYMBOL
-    b = [10,100,1001,500, 2000, 0,1000,2000,2001,2000]
-    h = [10,100,1101,2010, 501, 0,1000,500,400,501]
-    e = ["Finished", "Finished", "Too much Rekursion", "Too much Rekursion","Too much Rekursion", "No Parts/IPs", "Finished","Finished","Too much Rekursion", "Too much Rekursion"]
+    b = [10,100,1001,500, 2000, 0,310,2000,2001,2000]
+    h = [10,100,1101,2010, 501, 0,310,500,400,501]
+    e = ["Finished", "Finished", "Too much Rekursion", "Too much Rekursion","Too much Rekursion", "No Parts/IPs", "Finished","Timed out","Too much Rekursion", "Too much Rekursion"]
     for i in range (0,10):
         setGlobals(M_SYMBOL, b[i], S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, h[i], Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
         x = main()
+        if (x[0:8] == "Finished"):
+            y = x[0:8]
+        else:
+            y = x
         print("Exspected: " + e[i])
-        print("Recieved:  " + x)
-        if (x == e[i]):
+        if (y == "Finished"):
+            print("Recieved:  " + x)
+        else:
+            print("Recieved:  " + y)
+        if (y == e[i]):
             print("Test Passed")
         else:
             print("Test Failed")
 def TEST_B():
+
 
     global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     e = "Too much Rekursion"
@@ -70,16 +81,22 @@ def TEST_B():
         if (i%100 == 0):
             print(i)
         setGlobals(M_SYMBOL, i, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, 1, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
-        x = main()
+        x = main()[0]
         if (x == e):
             p += 1
     print("Exspected: 1000")
     print("Recieved:  "+ str(p))
+def TEST_C():
+    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    
 def createIdentPoints(symbol,id_start):
     commands = []
     if (C_IdentPoints % (len(P_IdentPoints)) != 0):
         return "Invalid Pattern Length"
     for i in range (0,C_IdentPoints):
+        global checkTimeOut, DoTimeOuts
+        if (checkTimeOut()!="0"):
+            return checkTimeOut()
         commands.append(
             {
                 "SYMBOL":(symbol + str(i)),
@@ -88,10 +105,15 @@ def createIdentPoints(symbol,id_start):
         )
     return commands
 def createProductionUnits(M_Symbol, M_PU_IDENT, TypePattern):
+    
     if (C_Parts % len(P_UnitTypes) != 0):
         return "Invalid Pattern Length"
     commands = []
     for i in range (0,C_Parts):
+        global checkTimeOut, DoTimeOuts
+        
+        if (checkTimeOut()!="0"):
+            return checkTimeOut()
         if (i < len(TypePattern)):
             commands.append(
                 {
@@ -125,6 +147,8 @@ def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_Q
         if (globalTime != True):
             time = M_TIMESTAMP
         for i in range (0, C_IdentPoints):
+            if (checkTimeOut()!="0"):
+                return checkTimeOut()
             m = time.timestamp()
             m = m + I_TIMESTAMP
             time = datetime.fromtimestamp(m)
@@ -172,40 +196,49 @@ def returnJSON(IdentPoints, Parts, Simulation):
     if (checkErrors(k) == "0"):
         file = open("Data/result4.json", "w")
         file.write(json.dumps(k))
+        return "0"
     else:
-        print(checkErrors(k))
+        return checkErrors(k)
 def checkErrors(data):
     data
     n = type(["n","d"])
     if (type(data["IdentPointCreatingCommands"]) != n):
-        print("WARNING " + data["IdentPointCreatingCommands"])
-        return "Error in Ident Point creation"
+        return data["IdentPointCreatingCommands"]
     elif (type(data["ProductionUnitCreatingCommands"]) != n):
-        print("WARNING " + data["ProductionUnitCreatingCommands"])
-        return "Error in PU creation"
+        return data["ProductionUnitCreatingCommands"]
     elif (type(data["IdentPointSimulation"]) != n):
-        print("WARNING " + data["IdentPointSimulation"])
-        return "Error in IP Simulation"
+        return data["IdentPointSimulation"]
     else:
         return "0"
 def main():
+
+    global time_start
     time_start = datetime.now()
     global IP_NameBase, IP_id, M_SYMBOL, Part_NameBase, P_UnitTypes, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime, S_IdentPoints
-    if ((C_IdentPoints > 1000) and (C_Parts > 1000)):
-        return "Too much Rekursion"
-    if (C_IdentPoints * C_Parts > 1000000):
-        return "Too much Rekursion"
-    if ((C_IdentPoints > 2000) or (C_Parts > 2000)):
-        return "Too much Rekursion"
     if ((C_IdentPoints < 1) or (C_Parts < 1)):
         return "No Parts/IPs"
+    if ((C_IdentPoints*C_Parts)>1000000):
+        return "Too much Data"
     a = createIdentPoints(IP_NameBase, IP_id)
     b = createProductionUnits(M_SYMBOL, Part_NameBase, P_UnitTypes)
     c = simulateIdentPoints(M_SYMBOL, Part_NameBase, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime, S_IdentPoints)
-    returnJSON(a,b,c)
+    x = returnJSON(a,b,c)
+    if (x != "0"):
+        return x
     time_end = datetime.now()
     diff = time_end - time_start
-    return "Finished"# + str(diff)
-print(main())
-#TEST_A()
+    return "Finished after " + str(diff)
+def checkTimeOut():
+    global time_start, LimitTimeOut, DoTimeOuts
+    if ((datetime.timestamp(datetime.now())-datetime.timestamp(time_start))>=300):
+        return "Critical Timeout: Script was shut down to prevent major Problems"
+    elif (DoTimeOuts):
+        if ((datetime.timestamp(datetime.now())-datetime.timestamp(time_start))>=LimitTimeOut):
+            return "Timed out"
+        else:
+            return "0"
+    else:
+        return "0"
+#print(main())
+TEST_A()
 #TEST_B()

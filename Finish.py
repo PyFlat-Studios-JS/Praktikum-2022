@@ -9,11 +9,11 @@ def main():
     c = pyData["IdentPointSimulation"]
     for i in range (0, len(a)):
         r = json.dumps(a[i])
-        #Load Command goes here
+        print(r)
     for i in range (0, len(b)):
         r = json.dumps(b[i])
-        #Load Command goes here
+        print(r)
     for i in range (0, len(c)):
         r = json.dumps(c[i])
-        #Load Command goes here
+        print(r)
 main()
