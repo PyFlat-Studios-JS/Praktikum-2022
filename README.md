@@ -22,3 +22,5 @@ Parameter:
 - S_TimeStamp (Timestamp) --> Zeitpunkt, bei dem das erste Produkt den ersten Scannpunkt durchläuft
 - I_TimeStamp (int) --> Anzahl in Sekunden, um den die Zeit erhöht wird
 - globalTime (boolean) --> False: die Zeit wird nach jedem Prdoukt auf den Startwert zurückgesetzt, True: die Zeit läuft nach jedem Produkt weiter
+- DoTimeOuts (boolean) --> Gibt an, ob Timeouts überprüft werden sollen -- Sehr zu empfehlen, um zu lange Laufzeiten zu vermeiden. Die Begrenzung C_Parts * C_Identpoints < 1000000) besteht weiterhin.
+- LimitTimeOut (int) --> Zeit in Sekunden nach der ein Timeout durchgeführt werden soll. (~Maximale Laufzeit: <3min; Erzwungender Timeout: 5min;Normale Laufzeiten <30sek)
