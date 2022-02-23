@@ -32,7 +32,7 @@ globalTime = True
 #Do Timeouts Never set to False
 DoTimeOuts = True
 #Timeout Limit in s
-LimitTimeOut = 5
+LimitTimeOut = 30
 
 def setGlobals(a,b,c,d,e,f,g,h,i,j,k,l,m):
     global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
