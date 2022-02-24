@@ -23,14 +23,14 @@ def main():
                 AmountTooLittleData += 1
             elif (Logs[i][18:27] == "Timed out"):
                 AmountTimeOut += 1
-            elif (Logs[i][18:40] == "Invalid Pattern Length"):
+            elif (Logs[i][18:32] == "Invalid Action"):
                 AmountInvalidPattern += 1
             elif (Logs[i][18:40] == "Invalid Product Amount"):
                 AmountInvalidProcuctAmount += 1
             else:
                 AmountCriticalTimeout += 1
     x = [AmountSuccess, AmountTooMuchData, AmountTooLittleData, AmountInvalidPattern, AmountInvalidProcuctAmount, AmountTimeOut, AmountCriticalTimeout]
-    labels = 'Finished ' + str(AmountSuccess), "Too much Data " +str(AmountTooMuchData), "No Parts/Ips " +str(AmountTooLittleData), "Invalid Pattern " + str(AmountInvalidPattern), "Invalid Products " + str(AmountInvalidProcuctAmount), "TimeOut " +str(AmountTimeOut), "Critical Timeout "+str(AmountCriticalTimeout)
+    labels = 'Finished ' + str(AmountSuccess), "Too much Data " +str(AmountTooMuchData), "No Parts/Ips " +str(AmountTooLittleData), "Invalid Action " + str(AmountInvalidPattern), "Invalid Products " + str(AmountInvalidProcuctAmount), "TimeOut " +str(AmountTimeOut), "Critical Timeout "+str(AmountCriticalTimeout)
     fig1, ax1 = plt.subplots()
     ax1.pie(x,labels=labels, autopct='%1.1f%%')
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.

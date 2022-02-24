@@ -8,7 +8,7 @@ M_SYMBOL = "SEAT"
 #Menge der Ident-Points
 C_IdentPoints = 5
 #Ident Point Pattern
-P_IdentPoints = [1]
+P_IdentPoints = [1,2,3, 8]
 #Ident Points Id-Startwert
 IP_id = 38462
 #Ident Point Basis Name
@@ -85,8 +85,6 @@ def TEST_B():
     print("Recieved:  "+ str(p))    
 def createIdentPoints(symbol,id_start):
     commands = []
-    if (C_IdentPoints % (len(P_IdentPoints)) != 0):
-        return "Invalid Pattern Length"
     for i in range (0,C_IdentPoints):
         global checkTimeOut, DoTimeOuts
         if (checkTimeOut()!="0"):
@@ -100,8 +98,6 @@ def createIdentPoints(symbol,id_start):
     return commands
 def createProductionUnits(M_Symbol, M_PU_IDENT, TypePattern):
     
-    if (C_Parts % len(P_UnitTypes) != 0):
-        return "Invalid Pattern Length"
     commands = []
     for i in range (0,C_Parts):
         global checkTimeOut, DoTimeOuts
@@ -129,8 +125,6 @@ def createProductionUnits(M_Symbol, M_PU_IDENT, TypePattern):
             )
     return commands
 def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_QUANT, M_TIMESTAMP, C_IdentPoints, I_TIMESTAMP, C_Parts, globalTime):
-    if (C_IdentPoints % len(ACTION_Pattern) != 0):
-        return "Invalid Pattern length"
     if (M_CARR_QUANT <= 0):
         return "Invalid Product Amount"
     commands = []
@@ -148,12 +142,12 @@ def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_Q
                 if (ACTION_Pattern[i] == 1 or ACTION_Pattern[i] == 2 or ACTION_Pattern[i] == 3):
                     dummy = 4
                 else:
-                    return "Invalid Action at Part " + str(c) + " and IdentPoint " + str(i)
+                    return "Invalid Action"
                 commands.append(
                 {
                 "M_SYMBOL": P_Symbol,
                 "M_PU_IDENT": PU_Symbol + str(c),
-                "M_IDENTPOINT_Symbol": IP_Symbol + str(i),
+                "M_IDENTPOINT_SYMBOL": IP_Symbol + str(i),
                 "M_ACTION": ACTION_Pattern[i],
                 "M_CARR_QUANT": M_CARR_QUANT,
                 "M_TIMESTAMP": str(time)
@@ -166,12 +160,12 @@ def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_Q
                 if (ACTION_Pattern[e] == 1 or ACTION_Pattern[e] == 2 or ACTION_Pattern[e] == 3):
                     dummy = 8
                 else:
-                    return "Invalid Action at Part " + str(c) + " and IdentPoint " + str(i)
+                    return "Invalid Action"
                 commands.append(
                     {
                     "M_SYMBOL": P_Symbol,
                     "M_PU_IDENT": PU_Symbol + str(c),
-                    "M_IDENTPOINT_Symbol": IP_Symbol + str(i),
+                    "M_IDENTPOINT_SYMBOL": IP_Symbol + str(i),
                     "M_ACTION": ACTION_Pattern[e],
                     "M_CARR_QUANT": M_CARR_QUANT,
                     "M_TIMESTAMP": str(time)
@@ -245,5 +239,5 @@ def checkTimeOut():
             return "0"
     else:
         return "0"
-#print(main())
-TEST_A()
+print(main())
+#TEST_A()
