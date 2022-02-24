@@ -11,13 +11,13 @@ Probleme:
 Parameter:
 - M_SYMBOL (str) --> Name des Produkts, ein gültiger name muss vom Nutzer festgelegt werden
 - C_IdentPoints (int) --> Menge der ScanIdent Points punkte 
-- P_IdentPoints (int Array) --> Regelmäßige Folge von Aktionen eines Prdouktes an Ident Points -- C_IdentPoints muss ohne Rest durch die Länge von P_IdentPoints teilbar sein
+- P_IdentPoints (int Array) --> Regelmäßige Folge von Aktionen eines Prdouktes an Ident Points
 - IP_id (int) --> Startwert für Ident Points (Id wird für jeden IP um 1 erhöht)
 - IP_NameBase (str) --> Grundname, wird für jeden IP mit der Nummer des IP ergänzt: bsp.(TestPoint1, TestPoint2, TestPoint3, TestPoint4, ...)
 - C_CARR_QUANT (int) --> Anzahl der Produkte, die auf einmal transportiert werden (Hat keine Auswirkungen auf das Programm, der Parameter wird 1:1 übergeben)
 - C_Parts (int) --> Anzahl der ProductionUnits
 - Part_NameBase (str) --> Grundname, wird für jeden Part mit der Nummer des Parts ergänzt: bsp.(TestPart1, TestPart2, TestPart3, ...)
-- P_UnitTypes (int Array) --> Einheitentypen - müssen vom Nutzer festgelegt werden - sonst gleiche Funktion wie P_IdentPoints
+- P_UnitTypes (int Array) --> Einheitentypen - müssen vom Nutzer festgelegt werden
 - S_TimeStamp (Timestamp) --> Zeitpunkt, bei dem das erste Produkt den ersten Scannpunkt durchläuft
 - I_TimeStamp (int) --> Anzahl in Sekunden, um den die Zeit erhöht wird
 - globalTime (boolean) --> False: die Zeit wird nach jedem Prdoukt auf den Startwert zurückgesetzt, True: die Zeit läuft nach jedem Produkt weiter
@@ -29,5 +29,5 @@ Mögliche Rückmeldungen:
 - No Parts/IPs ==> Wird ausgegeben, wenn C_Parts oder C_Identpoints <= 0 ist.
 - Timed out ==> Wird ausgegeben, wenn die Prozesszeit > LimitTimeOut ist
 - Critical Timeout ==> Wird nach 5 min Prozessdauer ausgegeben und Taucht nur auf, wenn LimitTimeOut > 300 oder DoTimeOuts = False gesetzt ist. Sollte aber nie auftauchen, es sei denn, die Too much Data-Grenze wird über 1000000 erhöht. Die Normale Prozessdauer bei maximaler Länge beträgt 2-3 min
-- Invalid Pattern length ==> Wird ausgegeben, wenn C_Parts oder C_IdentPoints nicht ohne Rest durch P_UnitTypes bzw. P_IdentPoints teilbar ist #TODO: Ausschaltbar machen
+- Invalid Pattern length ==> Wird nicht mehr ausgegeben
 - Invalid Product Amount ==> Wird ausgegeben, wenn M_CARR_QUANT <= 0 ist.
