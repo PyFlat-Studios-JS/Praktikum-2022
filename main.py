@@ -82,10 +82,7 @@ def TEST_B():
         if (x == e):
             p += 1
     print("Exspected: 1000")
-    print("Recieved:  "+ str(p))
-def TEST_C():
-    global M_SYMBOL, C_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
-    
+    print("Recieved:  "+ str(p))    
 def createIdentPoints(symbol,id_start):
     commands = []
     if (C_IdentPoints % (len(P_IdentPoints)) != 0):
@@ -248,6 +245,5 @@ def checkTimeOut():
             return "0"
     else:
         return "0"
-#print(main())
+print(main())
 #TEST_A()
-TEST_B()
