@@ -7,8 +7,6 @@ time_start = datetime.now()
 M_SYMBOL = "SEAT"
 #Menge der Ident-Points
 C_IdentPoints = 5
-#Ident Points Simulieren?
-S_IdentPoints = True
 #Ident Point Pattern
 P_IdentPoints = [1]
 #Ident Points Id-Startwert
@@ -24,7 +22,7 @@ Part_NameBase = "TestPart"
 #Unit Type Pattern
 P_UnitTypes = [1]
 #Timestamp - Start format: datetime(year,month,day,hour,minute,second)
-S_Timestamp = datetime.now()
+S_Timestamp = datetime(2022,2,24,8,41,0)
 #Timestamp - Intervall in s!!!
 I_Timestamp = 10
 #global Time: Zeit wird nicht für jede PU zurükgesetzt
@@ -35,10 +33,9 @@ DoTimeOuts = True
 LimitTimeOut = 30
 
 def setGlobals(a,b,c,d,e,f,g,h,i,j,k,l,m):
-    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    global M_SYMBOL, C_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     M_SYMBOL = a
     C_IdentPoints = b
-    S_IdentPoints = c
     P_IdentPoints = d
     IP_id = e
     IP_NameBase = f
@@ -50,13 +47,13 @@ def setGlobals(a,b,c,d,e,f,g,h,i,j,k,l,m):
     I_Timestamp = l
     globalTime = m
 def TEST_A():
-    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    global M_SYMBOL, C_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     M_SYMBOL
     b = [10,100,1001,500, 2000, 0,310,2000,2001,2000]
     h = [10,100,1101,2010, 501, 0,310,500,400,501]
     e = ["Finished", "Finished", "Too much Rekursion", "Too much Rekursion","Too much Rekursion", "No Parts/IPs", "Finished","Timed out","Too much Rekursion", "Too much Rekursion"]
     for i in range (0,10):
-        setGlobals(M_SYMBOL, b[i], S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, h[i], Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
+        setGlobals(M_SYMBOL, b[i], 0, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, h[i], Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
         x = main()
         if (x[0:8] == "Finished"):
             y = x[0:8]
@@ -74,20 +71,20 @@ def TEST_A():
 def TEST_B():
 
 
-    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    global M_SYMBOL, C_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     e = "Too much Rekursion"
     p = 0
     for i in range (1000,3000):
         if (i%100 == 0):
             print(i)
-        setGlobals(M_SYMBOL, i, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, 1, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
+        setGlobals(M_SYMBOL, i,0, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, 1, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime)
         x = main()[0]
         if (x == e):
             p += 1
     print("Exspected: 1000")
     print("Recieved:  "+ str(p))
 def TEST_C():
-    global M_SYMBOL, C_IdentPoints, S_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
+    global M_SYMBOL, C_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     
 def createIdentPoints(symbol,id_start):
     commands = []
@@ -134,13 +131,11 @@ def createProductionUnits(M_Symbol, M_PU_IDENT, TypePattern):
                 }
             )
     return commands
-def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_QUANT, M_TIMESTAMP, C_IdentPoints, I_TIMESTAMP, C_Parts, globalTime, S_IdentPoints):
+def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_QUANT, M_TIMESTAMP, C_IdentPoints, I_TIMESTAMP, C_Parts, globalTime):
     if (C_IdentPoints % len(ACTION_Pattern) != 0):
         return "Invalid Pattern length"
     if (M_CARR_QUANT <= 0):
         return "Invalid Product Amount"
-    if (S_IdentPoints == False):
-        return "Ident-Point simulation not active"
     commands = []
     time = M_TIMESTAMP
     for c in range (0, C_Parts):
@@ -211,27 +206,41 @@ def checkErrors(data):
     else:
         return "0"
 def main():
-
+    LFile = open("log.json", "r")
+    Log = LFile.read()
+    PLog = json.loads(Log)
     global time_start
     time_start = datetime.now()
-    global IP_NameBase, IP_id, M_SYMBOL, Part_NameBase, P_UnitTypes, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime, S_IdentPoints
+    global IP_NameBase, IP_id, M_SYMBOL, Part_NameBase, P_UnitTypes, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime
     if ((C_IdentPoints < 1) or (C_Parts < 1)):
+        PLog["Log"].append("Failed with Error No Parts/IPs at " + str(datetime.now()))
+        LFile = open("log.json", "w")
+        LFile.write (json.dumps(PLog))
         return "No Parts/IPs"
     if ((C_IdentPoints*C_Parts)>1000000):
+        PLog["Log"].append("Failed with Error Too much Data at " + str(datetime.now()))
+        LFile = open("log.json", "w")
+        LFile.write (json.dumps(PLog))
         return "Too much Data"
     a = createIdentPoints(IP_NameBase, IP_id)
     b = createProductionUnits(M_SYMBOL, Part_NameBase, P_UnitTypes)
-    c = simulateIdentPoints(M_SYMBOL, Part_NameBase, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime, S_IdentPoints)
+    c = simulateIdentPoints(M_SYMBOL, Part_NameBase, IP_NameBase, P_IdentPoints, M_CARR_QUANT, S_Timestamp, C_IdentPoints, I_Timestamp, C_Parts, globalTime)
     x = returnJSON(a,b,c)
     if (x != "0"):
+        PLog["Log"].append("Failed with Error " + x + " at " +str(datetime.now()))
+        LFile = open("log.json", "w")
+        LFile.write (json.dumps(PLog))
         return x
+    PLog["Log"].append("Finished at " + str(datetime.now()))
+    LFile = open("log.json", "w")
+    LFile.write (json.dumps(PLog))
     time_end = datetime.now()
     diff = time_end - time_start
     return "Finished after " + str(diff)
 def checkTimeOut():
     global time_start, LimitTimeOut, DoTimeOuts
     if ((datetime.timestamp(datetime.now())-datetime.timestamp(time_start))>=300):
-        return "Critical Timeout: Script was shut down to prevent major Problems"
+        return "Critical Timeout"
     elif (DoTimeOuts):
         if ((datetime.timestamp(datetime.now())-datetime.timestamp(time_start))>=LimitTimeOut):
             return "Timed out"
