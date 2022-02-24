@@ -1,5 +1,6 @@
 import json
-
+import webbrowser
+import requests
 def main():
     file = open("Data/result4.json", "r")
     jsData = file.read()
@@ -16,4 +17,7 @@ def main():
     for i in range (0, len(c)):
         r = json.dumps(c[i])
         print(r)
-main()
+#main()
+webbrowser.open("https://gefasoft.de")
+x = requests.get("https://gefasoft.de")
+print(x.text)
