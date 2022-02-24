@@ -249,5 +249,5 @@ def checkTimeOut():
     else:
         return "0"
 #print(main())
-TEST_A()
-#TEST_B()
+#TEST_A()
+TEST_B()
