@@ -1,12 +1,13 @@
 # Praktikum-2022
 Automated generation of data used for testing
+⁣============================================================================================
+!!!WARNUNG!!!
+Der Nutzer muss die Berechtigung haben pu_identpoint zu erstellen sowie pu_production_units zu bearbeiten
+Nutzername und Password müssen in finish.py eingegeben werden.
+Folgende externen Python-bibliotheken werden benötigt:  matplotlib (pip install matplotlib) (optional für analyzelog.py)
+⁣============================================================================================
 
 Konfigurierbare Erzeugung von den Nötigen Befehlen, um Testdaten zu erzeugen
-Geplant: Automatische Ertzeigung der Daten
-Probleme: 
-- Jede Produktionseinheit muss jeden IdentPoint einmal durchlaufen. So ergeben sich Datenmengen nach dem Muster Partmenge * Punktmenge
-  kann sehr groß werden
-- Daten müssen noch manuell eingegeben werden
 
 Parameter:
 - M_SYMBOL (str) --> Name des Produkts, ein gültiger name muss vom Nutzer festgelegt werden
