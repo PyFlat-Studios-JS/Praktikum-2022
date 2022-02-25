@@ -8,7 +8,7 @@ M_SYMBOL = "SEAT"
 #Menge der Ident-Points
 C_IdentPoints = 5
 #Ident Point Pattern
-P_IdentPoints = [1,2,3, 8]
+P_IdentPoints = [1,2,3]
 #Ident Points Id-Startwert
 IP_id = 38462
 #Ident Point Basis Name
@@ -31,7 +31,6 @@ globalTime = True
 DoTimeOuts = True
 #Timeout Limit in s
 LimitTimeOut = 30
-
 def setGlobals(a,b,c,d,e,f,g,h,i,j,k,l,m):
     global M_SYMBOL, C_IdentPoints, P_IdentPoints, IP_id, IP_NameBase, M_CARR_QUANT, C_Parts, Part_NameBase, P_UnitTypes, S_Timestamp, I_Timestamp, globalTime
     M_SYMBOL = a
@@ -92,7 +91,7 @@ def createIdentPoints(symbol,id_start):
         commands.append(
             {
                 "SYMBOL":(symbol + str(i)),
-                "NODE":str(id_start+i)
+                "NODE":id_start+i
             }
         )
     return commands
@@ -109,7 +108,7 @@ def createProductionUnits(M_Symbol, M_PU_IDENT, TypePattern):
                 {
                 "M_SYMBOL":M_Symbol,
                 "M_PU_IDENT":M_PU_IDENT + str(i),
-                "M_UNIT_TYPE":str(TypePattern[i])
+                "M_UNIT_TYPE":TypePattern[i]
                 }
             )
         else:
@@ -120,7 +119,7 @@ def createProductionUnits(M_Symbol, M_PU_IDENT, TypePattern):
                 {
                 "M_SYMBOL":M_Symbol,
                 "M_PU_IDENT":M_PU_IDENT + str(i),
-                "M_UNIT_TYPE":str(TypePattern[e])
+                "M_UNIT_TYPE":TypePattern[e]
                 }
             )
     return commands
@@ -150,7 +149,7 @@ def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_Q
                 "M_IDENTPOINT_SYMBOL": IP_Symbol + str(i),
                 "M_ACTION": ACTION_Pattern[i],
                 "M_CARR_QUANT": M_CARR_QUANT,
-                "M_TIMESTAMP": str(time)
+                "M_TIMESTAMP": str(time).split(" ")[0] + "T" + str(time).split(" ")[1] + "Z"
                 }
                 )
             else:
@@ -168,7 +167,7 @@ def simulateIdentPoints(P_Symbol, PU_Symbol, IP_Symbol, ACTION_Pattern, M_CARR_Q
                     "M_IDENTPOINT_SYMBOL": IP_Symbol + str(i),
                     "M_ACTION": ACTION_Pattern[e],
                     "M_CARR_QUANT": M_CARR_QUANT,
-                    "M_TIMESTAMP": str(time)
+                    "M_TIMESTAMP": str(time).split(" ")[0] + "T" + str(time).split(" ")[1] + "Z"
                     }
                 )
     return commands
